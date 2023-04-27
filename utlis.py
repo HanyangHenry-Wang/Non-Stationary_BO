@@ -5,6 +5,26 @@ import math
 from torch.distributions import Kumaraswamy
 import torch
 import numpy as np
+from botorch.utils.sampling import draw_sobol_samples
+
+# def get_initial_points(bounds,num,seed=0):
+    
+    
+#     np.random.seed(seed)
+    
+#     bounds = bounds.T
+#     dim = bounds.shape[0]
+#     train_x = torch.tensor(np.random.uniform(bounds[:, 0], bounds[:, 1],size=(num,dim)))
+    
+#     return train_x
+
+def get_initial_points(bounds,num,device,dtype,seed=0):
+    
+        train_x = draw_sobol_samples(
+        bounds=bounds, n=num, q=1,seed=seed).reshape(num,-1).to(device, dtype=dtype)
+        
+        return train_x
+
 
 ######################### TuRBO #########################################
 @dataclass
@@ -48,16 +68,6 @@ def update_state(state, Y_next):
     return state
 
 
-def get_initial_points(bounds,num,seed=0):
-    
-    
-    np.random.seed(seed)
-    
-    bounds = bounds.T
-    dim = bounds.shape[0]
-    train_x = torch.tensor(np.random.uniform(bounds[:, 0], bounds[:, 1],size=(num,dim)))
-    
-    return train_x
 
 
 
